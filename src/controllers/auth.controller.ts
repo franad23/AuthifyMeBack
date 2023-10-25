@@ -3,12 +3,16 @@ import sgMail from "@sendgrid/mail";
 import dotenv from "dotenv";
 import { v4 as uuidv4 } from "uuid";
 import bcrypt from "bcryptjs";
+import createAccessToken from "../libs/createToken.libs";
 
-dotenv.config();
 //Queries
 import { CREATEUSER, FINDUSERIFEXISTS } from "../queries";
 
+//Interfaces
+import { MainUser } from "../interfaces/mainUser.interface";
+
 sgMail.setApiKey(process.env.SENDGRID_API_KEY as string)
+dotenv.config();
 
 export const registerMainUser = async (req: Request, res: Response) => {
   const {username ,email, password} = req.body;
@@ -44,3 +48,27 @@ export const registerMainUser = async (req: Request, res: Response) => {
   }
 }
 
+export const loginMainUser = async (req: Request, res: Response) => {
+  const {email, password} = req.body;
+  const {rows} = await FINDUSERIFEXISTS(email);
+  const userFound:MainUser = rows[0];
+  const passwordMatch = await bcrypt.compare(password, userFound.password);
+  if (!passwordMatch) return res.status(400).json({message: "Usuario o contraseña incorrectos"})
+  if (rows.length === 0) return res.status(400).json({message: "Usuario o contraseña incorrectos"})
+  try {
+    const token = await createAccessToken({
+      apikey: userFound.apikey, 
+      username: userFound.username, 
+      email: userFound.email});
+    res.status(200).json({
+      apikey: userFound.apikey, 
+      username: userFound.username, 
+      email: userFound.email,
+      token: token
+    })
+  }
+  catch (error) {
+    console.log(error);
+    res.status(500).json({message: "Error al loguear el usuario"})
+  }
+} 
