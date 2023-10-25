@@ -6,9 +6,9 @@ export const CREATETABLE = async () => {
     return response;
 }
 
-export const CREATEUSER = async (username:string, email:string, password:string) => {
-    const query = 'INSERT INTO mainUsersAuthifyMe (username, email, password) VALUES ($1, $2, $3)';
-    const response = await pool.query(query, [username, email, password]);
+export const CREATEUSER = async (apikey:string, username:string, email:string, password:string) => {
+    const query = 'INSERT INTO mainUsersAuthifyMe (apikey, username, email, password) VALUES ($1, $2, $3, $4)';
+    const response = await pool.query(query, [apikey, username, email, password]);
     return response;
 }
 
