@@ -61,9 +61,11 @@ export const loginMainUser = async (req: Request, res: Response) => {
       username: userFound.username, 
       email: userFound.email});
     res.status(200).json({
-      apikey: userFound.apikey, 
-      username: userFound.username, 
-      email: userFound.email,
+      profile: {
+        apikey: userFound.apikey, 
+        username: userFound.username, 
+        email: userFound.email
+      },
       token: token
     })
   }
