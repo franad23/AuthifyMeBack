@@ -5,6 +5,8 @@ import { v4 as uuidv4 } from "uuid";
 import bcrypt from "bcryptjs";
 import createAccessToken from "../libs/createToken.libs";
 
+dotenv.config();
+
 //Queries
 import { CREATEUSER, FINDUSERIFEXISTS } from "../queries";
 
@@ -12,7 +14,6 @@ import { CREATEUSER, FINDUSERIFEXISTS } from "../queries";
 import { MainUser } from "../interfaces/mainUser.interface";
 
 sgMail.setApiKey(process.env.SENDGRID_API_KEY as string)
-dotenv.config();
 
 export const registerMainUser = async (req: Request, res: Response) => {
   const {username ,email, password} = req.body;
